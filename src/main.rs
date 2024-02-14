@@ -17,7 +17,7 @@ impl Default for AppSettings {
             window_dim: [800.0,800.0],
             window_min_dim: [400.0,400.0],
             window_max_dim: [1600.0,1600.0],
-            title: "RF Control".to_owned(),
+            title: "app template".to_owned(),
         }
     }
 }
@@ -39,19 +39,27 @@ impl Default for MainGUI
 impl MainGUI {
     pub fn new (cc: &eframe::CreationContext<'_>) -> Self {Default::default()}// init constructor
     //other functions
-    fn menu_bar(ui: &mut Ui)
+    fn menu_bar(ctx: &Context, ui: &mut Ui)
     {
         //menu bar
+        egui::menu::bar(ui, |ui | {
+            ui.menu_button("File", |ui| {
+               if ui.button("Close").clicked()
+               {
+                   ctx.send_viewport_cmd(egui::viewport::ViewportCommand::Close);
+               }
+            });
+        });
     }
 
-    fn main_window(ui: &mut Ui)
+    fn main_window(ctx: &Context, ui: &mut Ui)
     {
         //main content
-       Self::footer(ui);
+       Self::footer(ctx, ui);
 
     }
 
-    fn footer(ui: &mut Ui)
+    fn footer(ctx: &Context, ui: &mut Ui)
     {
         //footer
         ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
@@ -67,10 +75,10 @@ impl eframe::App for MainGUI
         //do gui
 
         //Topbar
-        egui::TopBottomPanel::top("top_panel").show(ctx, | ui | Self::menu_bar);
+        egui::TopBottomPanel::top("top_panel").show(ctx, | ui | Self::menu_bar(ctx,ui));
 
         //main content
-        egui::CentralPanel::default().show(ctx, | ui | Self::main_window);
+        egui::CentralPanel::default().show(ctx, | ui | Self::main_window(ctx,ui));
 
     }
 
